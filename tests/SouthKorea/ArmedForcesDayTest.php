@@ -17,7 +17,9 @@ declare(strict_types = 1);
 
 namespace Yasumi\tests\SouthKorea;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
@@ -36,9 +38,9 @@ class ArmedForcesDayTest extends SouthKoreaBaseTestCase implements HolidayTestCa
     public const ESTABLISHMENT_YEAR = 1976;
 
     /**
-     * The year in which the holiday was removed.
+     * The year in which the holiday was abolished.
      */
-    public const REMOVED_YEAR = 1990;
+    public const ABOLISHED_YEAR = 1991;
 
     /**
      * Tests the holiday defined in this test.
@@ -47,41 +49,59 @@ class ArmedForcesDayTest extends SouthKoreaBaseTestCase implements HolidayTestCa
      */
     public function testHoliday(): void
     {
-        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR);
+        // From 1976 to 1990
+        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-10-1", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-10-1", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+        );
+
+        // Before 1976
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
+        );
+
+        // From 1991 and later
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(self::ABOLISHED_YEAR)
+        );
+
+        // Before 1976
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
         );
     }
 
     /**
-     * Tests the holiday defined in this test after removal.
+     * Tests the substitute holiday defined in this test.
      *
      * @throws \Exception
      */
-    public function testHolidayAfterRemoval(): void
+    #[DataProvider('SubstituteHolidayDataProvider')]
+    public function testSubstituteHoliday(int $year, ?string $expected): void
     {
-        $this->assertNotHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(self::REMOVED_YEAR + 1)
-        );
-    }
-
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
-        $this->assertNotHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
-        );
+        if ($expected) {
+            $this->assertSubstituteHoliday(
+                self::REGION,
+                self::HOLIDAY,
+                $year,
+                new \DateTime($expected, DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+            );
+        } else {
+            $this->assertNotSubstituteHoliday(
+                self::REGION,
+                self::HOLIDAY,
+                $year
+            );
+        }
     }
 
     /**
@@ -94,7 +114,7 @@ class ArmedForcesDayTest extends SouthKoreaBaseTestCase implements HolidayTestCa
         $this->assertTranslatedHolidayName(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR),
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1),
             [self::LOCALE => '국군의 날']
         );
     }
@@ -109,8 +129,19 @@ class ArmedForcesDayTest extends SouthKoreaBaseTestCase implements HolidayTestCa
         $this->assertHolidayType(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR),
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1),
             Holiday::TYPE_OFFICIAL
         );
+    }
+
+    public static function SubstituteHolidayDataProvider(): \Generator
+    {
+        for ($i = 0; $i < 20; ++$i) {
+            $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
+            match ($year) {
+                1989 => yield [$year, '1989-10-02'],
+                default => yield [$year, null],
+            };
+        }
     }
 }

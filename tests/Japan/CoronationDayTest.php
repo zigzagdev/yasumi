@@ -38,7 +38,7 @@ class CoronationDayTest extends JapanBaseTestCase implements HolidayTestCase
     /**
      * @throws \Exception
      */
-    public function testEmperorsCoronationDay(): void
+    public function testCoronationDay(): void
     {
         $this->assertHoliday(
             self::REGION,
@@ -51,7 +51,7 @@ class CoronationDayTest extends JapanBaseTestCase implements HolidayTestCase
     /**
      * @throws \Exception
      */
-    public function testEmperorsBirthdayBefore2019(): void
+    public function testCoronationDayBefore2019(): void
     {
         $this->assertNotHoliday(
             self::REGION,
@@ -63,7 +63,7 @@ class CoronationDayTest extends JapanBaseTestCase implements HolidayTestCase
     /**
      * @throws \Exception
      */
-    public function testEmperorsBirthdayAfter2020(): void
+    public function testCoronationDayAfter2020(): void
     {
         $this->assertNotHoliday(
             self::REGION,

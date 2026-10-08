@@ -19,13 +19,14 @@ namespace Yasumi\tests\Lithuania;
 
 use Yasumi\Holiday;
 use Yasumi\Provider\Lithuania;
+use Yasumi\tests\ProviderTestCase;
 
 /**
  * Class for testing holidays in Lithuania.
  *
  * @author Gedas Lukošius <gedas@lukosius.me>
  */
-class LithuaniaTest extends LithuaniaBaseTestCase
+class LithuaniaTest extends LithuaniaBaseTestCase implements ProviderTestCase
 {
     /**
      * Tests if all official holidays in Lithuania are defined by the provider class.
@@ -61,6 +62,10 @@ class LithuaniaTest extends LithuaniaBaseTestCase
 
         if ($year >= Lithuania::STATEHOOD_YEAR) {
             $holidays[] = 'statehoodDay';
+        }
+
+        if ($year >= Lithuania::ALL_SOULS_DAY) {
+            $holidays[] = 'allSoulsDay';
         }
 
         $this->assertDefinedHolidays($holidays, self::REGION, $year, Holiday::TYPE_OFFICIAL);

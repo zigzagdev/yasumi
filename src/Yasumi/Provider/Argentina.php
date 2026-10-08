@@ -55,20 +55,20 @@ class Argentina extends AbstractProvider
         $this->addHoliday($this->christmasDay($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->goodFriday($this->year, $this->timezone, $this->locale));
 
-        $this->addCarnavalHolidays();
-        $this->addRemembranceDay();
-        $this->addMalvinasDay();
-        $this->addMayRevolution();
-        $this->addFlagDay();
-        $this->addIndependenceDay();
-        $this->addImmaculateConceptionDay();
+        $this->calculateCarnavalHolidays();
+        $this->calculateRemembranceDay();
+        $this->calculateMalvinasDay();
+        $this->calculateMayRevolution();
+        $this->calculateFlagDay();
+        $this->calculateIndependenceDay();
+        $this->calculateImmaculateConceptionDay();
 
         // Add movable holidays (these must be added after all immovable official holidays and
         // before non-official holidays).
-        $this->addGeneralMartinMigueldeGuemesDay();
-        $this->addGeneralJoseSanMartinDay();
-        $this->addRaceDay();
-        $this->addNationalSovereigntyDay();
+        $this->calculateGeneralMartinMigueldeGuemesDay();
+        $this->calculateGeneralJoseSanMartinDay();
+        $this->calculateRaceDay();
+        $this->calculateNationalSovereigntyDay();
 
         // Non-official holidays
         $this->addHoliday($this->easter($this->year, $this->timezone, $this->locale, Holiday::TYPE_OBSERVANCE));
@@ -95,9 +95,13 @@ class Argentina extends AbstractProvider
      * Carnaval is the biggest popular festival of country. The festival
      * happens on Day 48 and 47 before Easter.
      *
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
      * @see https://en.wikipedia.org/wiki/Brazilian_Carnival
      */
-    protected function addCarnavalHolidays(): void
+    protected function calculateCarnavalHolidays(): void
     {
         if ($this->year >= 1700) {
             $easter = $this->calculateEaster($this->year, $this->timezone);
@@ -129,24 +133,29 @@ class Argentina extends AbstractProvider
                         'en' => $day['name_en'],
                     ],
                     $date,
-                    $this->locale
+                    $this->locale,
+                    Holiday::TYPE_OFFICIAL
                 ));
             }
         }
     }
 
-    /*
+    /**
      * Day of Remembrance for Truth and Justice.
      *
      * The Day of Remembrance for Truth and Justice (Spanish: Día de la
      * Memoria por la Verdad y la Justicia) is a public holiday in
      * Argentina, commemorating the victims of the Dirty War. It is held on
      * 24 March, the anniversary of the coup d'état of 1976 that brought the
-     *  National Reorganization Process to power.
+     * National Reorganization Process to power.
      *
-     * @link https://en.wikipedia.org/wiki/Day_of_Remembrance_for_Truth_and_Justice
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Day_of_Remembrance_for_Truth_and_Justice
      */
-    protected function addRemembranceDay(): void
+    protected function calculateRemembranceDay(): void
     {
         if ($this->year >= 2006) {
             $this->addHoliday(new Holiday(
@@ -156,12 +165,13 @@ class Argentina extends AbstractProvider
                     'es' => 'Día Nacional de la Memoria por la Verdad y la Justicia',
                 ],
                 new \DateTime("{$this->year}-03-24", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * Malvinas Day.
      *
      * Malvinas Day (Spanish: Día de las Malvinas), officially Day of the
@@ -170,9 +180,13 @@ class Argentina extends AbstractProvider
      * Argentina, observed each year on 2 April.[1] The name refers to the
      * Malvinas Islands, known in Spanish as the Islas Malvinas.
      *
-     * @link https://en.wikipedia.org/wiki/Malvinas_Day
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Malvinas_Day
      */
-    protected function addMalvinasDay(): void
+    protected function calculateMalvinasDay(): void
     {
         if ($this->year >= 1982) {
             $this->addHoliday(new Holiday(
@@ -182,12 +196,13 @@ class Argentina extends AbstractProvider
                     'es' => 'Día del Veterano y de los Caídos en la Guerra de Malvinas',
                 ],
                 new \DateTime("{$this->year}-04-02", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * First National Government.
      *
      * The Anniversary of the First National Government
@@ -198,9 +213,13 @@ class Argentina extends AbstractProvider
      * the Declaration of Independence, it is considered a National Day of
      * Argentina.
      *
-     * @link https://en.wikipedia.org/wiki/First_National_Government
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/First_National_Government
      */
-    protected function addMayRevolution(): void
+    protected function calculateMayRevolution(): void
     {
         if ($this->year >= 1810) {
             $this->addHoliday(new Holiday(
@@ -210,18 +229,23 @@ class Argentina extends AbstractProvider
                     'es' => 'Día de la Revolución de Mayo',
                 ],
                 new \DateTime("{$this->year}-05-25", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * Anniversary of the Passing of General Martín Miguel de Güemes.
      *
      * Anniversary of the death of Martín Miguel de Güemes, general of the
      * Argentine War of Independence.
+     *
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
      */
-    protected function addGeneralMartinMigueldeGuemesDay(): void
+    protected function calculateGeneralMartinMigueldeGuemesDay(): void
     {
         if ($this->year >= 1821) {
             $this->addHoliday(new Holiday(
@@ -231,20 +255,25 @@ class Argentina extends AbstractProvider
                     'es' => 'Paso a la Inmortalidad del General Martín Miguel de Güemes',
                 ],
                 $this->adjustMovableHoliday(new \DateTime("{$this->year}-06-17", DateTimeZoneFactory::getDateTimeZone($this->timezone))),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * General Manuel Belgrano Memorial Day.
      *
      * Anniversary of the death of Manuel Belgrano, creator of the Flag of
      * Argentina.
      *
-     * @link https://en.wikipedia.org/wiki/Flag_Day_(Argentina)
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Flag_Day_(Argentina)
      */
-    protected function addFlagDay(): void
+    protected function calculateFlagDay(): void
     {
         if ($this->year >= 1938) {
             $this->addHoliday(new Holiday(
@@ -254,19 +283,24 @@ class Argentina extends AbstractProvider
                     'es' => 'Paso a la Inmortalidad del General Manuel Belgrano',
                 ],
                 new \DateTime("{$this->year}-06-20", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * Independence Day.
      *
      * Anniversary of the Declaration of Independence in 1816.
      *
-     * @link https://en.wikipedia.org/wiki/Argentine_Declaration_of_Independence
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Argentine_Declaration_of_Independence
      */
-    protected function addIndependenceDay(): void
+    protected function calculateIndependenceDay(): void
     {
         if ($this->year >= self::PROCLAMATION_OF_INDEPENDENCE_YEAR) {
             $this->addHoliday(new Holiday(
@@ -276,18 +310,23 @@ class Argentina extends AbstractProvider
                     'es' => 'Día de la Independencia',
                 ],
                 new \DateTime("{$this->year}-07-09", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * General José de San Martín Memorial Day.
      *
      * Anniversary of the death of José de San Martín, liberator of
      * Argentina, Chile and Peru.
+     *
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
      */
-    protected function addGeneralJoseSanMartinDay(): void
+    protected function calculateGeneralJoseSanMartinDay(): void
     {
         if ($this->year >= 1850) {
             $this->addHoliday(new Holiday(
@@ -297,20 +336,25 @@ class Argentina extends AbstractProvider
                     'es' => 'Paso a la Inmortalidad del General José de San Martín',
                 ],
                 $this->adjustMovableHoliday(new \DateTime("{$this->year}-08-17", DateTimeZoneFactory::getDateTimeZone($this->timezone))),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * Day of Respect for Cultural Diversity.
      *
      * Former "Día de la raza" (English: Race day), anniversary of the
      * arrival of Columbus to the Americas.
      *
-     * @link https://en.wikipedia.org/wiki/Columbus_Day
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Columbus_Day
      */
-    protected function addRaceDay(): void
+    protected function calculateRaceDay(): void
     {
         if ($this->year >= 1492) {
             $this->addHoliday(new Holiday(
@@ -320,20 +364,25 @@ class Argentina extends AbstractProvider
                     'es' => 'Día del Respeto a la Diversidad Cultural',
                 ],
                 $this->adjustMovableHoliday(new \DateTime("{$this->year}-10-12", DateTimeZoneFactory::getDateTimeZone($this->timezone))),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * National Sovereignty Day.
      *
      * Anniversary of the 1845 Battle of Vuelta de Obligado against the
      * Anglo-French blockade of the Río de la Plata.
      *
-     * @link https://en.wikipedia.org/wiki/National_Sovereignty_Day
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/National_Sovereignty_Day
      */
-    protected function addNationalSovereigntyDay(): void
+    protected function calculateNationalSovereigntyDay(): void
     {
         if ($this->year >= 2010) {
             $this->addHoliday(new Holiday(
@@ -343,20 +392,25 @@ class Argentina extends AbstractProvider
                     'es' => 'Día de la Soberanía Nacional',
                 ],
                 $this->adjustMovableHoliday(new \DateTime("{$this->year}-11-20", DateTimeZoneFactory::getDateTimeZone($this->timezone))),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
-    /*
+    /**
      * Immaculate Conception Day.
      *
      * Christian holiday, conception of the Virgin Mary free from original
      * sin.
      *
-     * @link https://en.wikipedia.org/wiki/Immaculate_Conception
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     *
+     * @see https://en.wikipedia.org/wiki/Immaculate_Conception
      */
-    protected function addImmaculateConceptionDay(): void
+    protected function calculateImmaculateConceptionDay(): void
     {
         if ($this->year >= 1900) {
             $this->addHoliday(new Holiday(
@@ -366,7 +420,8 @@ class Argentina extends AbstractProvider
                     'es' => 'Día de la Inmaculada Concepción de María',
                 ],
                 new \DateTime("{$this->year}-12-08", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }

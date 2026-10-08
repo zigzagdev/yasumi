@@ -21,37 +21,29 @@ use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing the second day ofChristmas in the Netherlands.
+ * Class for testing Pentecost in the Netherlands.
  */
-class secondChristmasdayTest extends NetherlandsBaseTestCase implements HolidayTestCase
+class PentecostMondayTest extends NetherlandsBaseTestCase implements HolidayTestCase
 {
     /**
      * The name of the holiday to be tested.
      */
-    public const HOLIDAY = 'secondChristmasDay';
+    public const HOLIDAY = 'pentecostMonday';
 
     /**
-     * Tests the holiday defined in this test.
-     *
-     * @param int       $year     the year for which the holiday defined in this test needs to be tested
-     * @param \DateTime $expected the expected date
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('HolidayDataProvider')]
-    public function testHoliday(int $year, \DateTimeInterface $expected): void
-    {
-        $this->assertHoliday(self::REGION, self::HOLIDAY, $year, $expected);
-    }
-
-    /**
-     * Returns a list of random test dates used for assertion of the holiday defined in this test.
-     *
-     * @return array<array> list of test dates for the holiday defined in this test
+     * Tests Pentecost Monday.
      *
      * @throws \Exception
      */
-    public static function HolidayDataProvider(): array
+    public function testPentecostMonday(): void
     {
-        return static::generateRandomDates(12, 26, self::TIMEZONE);
+        $year = 2020;
+        $this->assertHoliday(
+            self::REGION,
+            'pentecostMonday',
+            $year,
+            new \DateTime("{$year}-6-1", new \DateTimeZone(self::TIMEZONE))
+        );
     }
 
     /**
@@ -65,7 +57,7 @@ class secondChristmasdayTest extends NetherlandsBaseTestCase implements HolidayT
             self::REGION,
             self::HOLIDAY,
             static::generateRandomYear(),
-            [self::LOCALE => 'tweede kerstdag']
+            [self::LOCALE => 'tweede pinksterdag']
         );
     }
 

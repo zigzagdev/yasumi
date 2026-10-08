@@ -21,7 +21,7 @@ use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class testing the Emperors Coronation day in Japan.
+ * Class testing Enthronement Proclamation Ceremony in Japan.
  */
 class EnthronementProclamationCeremonyTest extends JapanBaseTestCase implements HolidayTestCase
 {
@@ -33,12 +33,12 @@ class EnthronementProclamationCeremonyTest extends JapanBaseTestCase implements 
     /**
      * The year in which the holiday was first established.
      */
-    public const IMPLEMENT_YEAR = 2019;
+    public const ESTABLISHMENT_YEAR = 2019;
 
     /**
      * @throws \Exception
      */
-    public function testEmperorsCoronationDay(): void
+    public function testEnthronementProclamationCeremony(): void
     {
         $this->assertHoliday(
             self::REGION,
@@ -51,29 +51,31 @@ class EnthronementProclamationCeremonyTest extends JapanBaseTestCase implements 
     /**
      * @throws \Exception
      */
-    public function testEmperorsBirthdayBefore2019(): void
+    public function testEnthronementProclamationCeremonyBefore2019(): void
     {
         $this->assertNotHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(1000, self::IMPLEMENT_YEAR - 1)
+            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
         );
     }
 
     /**
      * @throws \Exception
      */
-    public function testEmperorsBirthdayAfter2020(): void
+    public function testEnthronementProclamationCeremonyAfter2020(): void
     {
         $this->assertNotHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::IMPLEMENT_YEAR + 1)
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR + 1)
         );
     }
 
     /**
      * Tests the translated name of the holiday defined in this test.
+     *
+     * @throws \Exception
      */
     public function testTranslation(): void
     {
@@ -87,6 +89,8 @@ class EnthronementProclamationCeremonyTest extends JapanBaseTestCase implements 
 
     /**
      * Tests type of the holiday defined in this test.
+     *
+     * @throws \Exception
      */
     public function testHolidayType(): void
     {

@@ -18,10 +18,11 @@ declare(strict_types = 1);
 namespace Yasumi\tests\SouthKorea;
 
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing Memorial Day in South Korea.
+ * Class for testing Memorial Day.
  */
 class MemorialDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
 {
@@ -42,26 +43,36 @@ class MemorialDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      */
     public function testHoliday(): void
     {
+        // From 1956 onwards.
         $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-6-6", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-6-6", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+        );
+
+        // Before 1956
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
         );
     }
 
     /**
-     * Tests the holiday defined in this test before establishment.
+     * Test that there are no alternative holidays.
+     *
+     * Alternative holidays do not apply to Memorial Day.
      *
      * @throws \Exception
      */
-    public function testHolidayBeforeEstablishment(): void
+    public function testSubstituteHoliday(): void
     {
-        $this->assertNotHoliday(
+        $this->assertNotSubstituteHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            static::generateRandomYear()
         );
     }
 

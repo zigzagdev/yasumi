@@ -55,16 +55,6 @@ class ValentinesDayTest extends NetherlandsBaseTestCase implements HolidayTestCa
     }
 
     /**
-     * Tests type of the holiday defined in this test.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayType(): void
-    {
-        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OTHER);
-    }
-
-    /**
      * Tests the translated name of the holiday defined in this test.
      *
      * @throws \Exception
@@ -77,5 +67,15 @@ class ValentinesDayTest extends NetherlandsBaseTestCase implements HolidayTestCa
             static::generateRandomYear(),
             [self::LOCALE => 'Valentijnsdag']
         );
+    }
+
+    /**
+     * Tests type of the holiday defined in this test.
+     *
+     * @throws \Exception
+     */
+    public function testHolidayType(): void
+    {
+        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OTHER);
     }
 }

@@ -35,8 +35,6 @@ abstract class DaylightSavingTime extends DenmarkBaseTestCase implements Holiday
 
         $this->observedYears = $observedYears;
         $this->unobservedYears = array_diff(range(reset($observedYears), end($observedYears)), $observedYears);
-
-        parent::__construct();
     }
 
     /* Swaps the observation from observed to unobserved for the given years */

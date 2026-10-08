@@ -33,15 +33,15 @@ class ThanksgivingDayTest extends CanadaBaseTestCase implements HolidayTestCase
     /**
      * The year in which the holiday was first established.
      */
-    public const ESTABLISHMENT_YEAR = 1879;
+    public const ESTABLISHMENT_YEAR = 1957;
 
     /**
-     * Tests Thanksgiving Day on or after 1879. Thanksgiving Day is celebrated since 1879 on the second Monday
-     * of October.
+     * Tests Thanksgiving Day on or after 1957. Thanksgiving Day has been celebrated on the second Monday of October
+     * since 1957, when the date was fixed by proclamation.
      *
      * @throws \Exception
      */
-    public function testThanksgivingDayOnAfter1879(): void
+    public function testThanksgivingDayOnAfter1957(): void
     {
         $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
         $this->assertHoliday(
@@ -53,12 +53,12 @@ class ThanksgivingDayTest extends CanadaBaseTestCase implements HolidayTestCase
     }
 
     /**
-     * Tests Thanksgiving Day before 1879. ThanksgivingDay Day is celebrated since 1879 on the second Monday
-     * of October.
+     * Tests Thanksgiving Day before 1957. The second Monday of October was only fixed by proclamation in 1957; before
+     * that the date varied.
      *
      * @throws \Exception
      */
-    public function testThanksgivingDayBefore1879(): void
+    public function testThanksgivingDayBefore1957(): void
     {
         $this->assertNotHoliday(
             self::REGION,

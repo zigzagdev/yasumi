@@ -36,7 +36,7 @@ class CultureDayTest extends JapanBaseTestCase implements HolidayTestCase
     public const ESTABLISHMENT_YEAR = 1948;
 
     /**
-     * Tests Culture Day after 1948. Culture Day Day was established after 1948.
+     * Tests Culture Day after 1948. Culture Day was established after 1948.
      *
      * @throws \Exception
      */

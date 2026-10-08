@@ -21,7 +21,7 @@ use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for teting Constitution Memorial Day in Japan.
+ * Class for testing Constitution Memorial Day in Japan.
  */
 class ConstitutionMemorialDayTest extends JapanBaseTestCase implements HolidayTestCase
 {

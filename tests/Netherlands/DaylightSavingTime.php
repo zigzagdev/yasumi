@@ -35,8 +35,6 @@ abstract class DaylightSavingTime extends NetherlandsBaseTestCase implements Hol
 
         $this->observedYears = $observedYears;
         $this->unobservedYears = array_diff(range($startYear, $endYear), $observedYears);
-
-        parent::__construct();
     }
 
     /* Swaps the observation from observed to unobserved for the given years */

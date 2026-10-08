@@ -17,11 +17,13 @@ declare(strict_types = 1);
 
 namespace Yasumi\tests\SouthKorea;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing Independence Movement Day in South Korea.
+ * Class for testing Independence Movement Day.
  */
 class IndependenceMovementDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
 {
@@ -42,12 +44,20 @@ class IndependenceMovementDayTest extends SouthKoreaBaseTestCase implements Holi
      */
     public function testHoliday(): void
     {
+        // From 1949 onwards.
         $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-3-1", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-3-1", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+        );
+
+        // Before 1949
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
         );
     }
 
@@ -56,54 +66,14 @@ class IndependenceMovementDayTest extends SouthKoreaBaseTestCase implements Holi
      *
      * @throws \Exception
      */
-    public function testSubstituteHoliday(): void
+    #[DataProvider('SubstituteHolidayDataProvider')]
+    public function testSubstituteHoliday(int $year, string $expected): void
     {
-        $tz = new \DateTimeZone(self::TIMEZONE);
-
-        // Before 2022
-        $this->assertNotSubstituteHoliday(self::REGION, self::HOLIDAY, 2020);
-
-        // By saturday
         $this->assertSubstituteHoliday(
             self::REGION,
             self::HOLIDAY,
-            2025,
-            new \DateTime('2025-3-3', $tz)
-        );
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            2031,
-            new \DateTime('2031-3-3', $tz)
-        );
-
-        // By sunday
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            2026,
-            new \DateTime('2026-3-2', $tz)
-        );
-        // By sunday
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            2037,
-            new \DateTime('2037-3-2', $tz)
-        );
-    }
-
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
-        $this->assertNotHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            $year,
+            new \DateTime($expected, DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
     }
 
@@ -135,5 +105,18 @@ class IndependenceMovementDayTest extends SouthKoreaBaseTestCase implements Holi
             static::generateRandomYear(self::ESTABLISHMENT_YEAR),
             Holiday::TYPE_OFFICIAL
         );
+    }
+
+    public static function SubstituteHolidayDataProvider(): array
+    {
+        return static::generateRandomDatesWithModifier(3, 1, function ($year, \DateTime $date): ?bool {
+            if ($year < 2023 || ! self::isWeekend($date)) {
+                return false;
+            }
+
+            $date->modify('next monday');
+
+            return null;
+        }, 20, self::ESTABLISHMENT_YEAR, self::TIMEZONE);
     }
 }

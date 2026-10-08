@@ -125,12 +125,10 @@ class Japan extends AbstractProvider
         if ($this->year >= 1966) {
             $this->addHoliday(new Holiday(
                 'nationalFoundationDay',
-                [
-                    'en' => 'National Foundation Day',
-                    'ja' => '建国記念の日',
-                ],
+                ['en' => 'National Foundation Day', 'ja' => '建国記念の日'],
                 new \DateTime("{$this->year}-2-11", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -145,12 +143,10 @@ class Japan extends AbstractProvider
         if ($this->year >= 2007) {
             $this->addHoliday(new Holiday(
                 'showaDay',
-                [
-                    'en' => 'Showa Day',
-                    'ja' => '昭和の日',
-                ],
+                ['en' => 'Showa Day', 'ja' => '昭和の日'],
                 new \DateTime("{$this->year}-4-29", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -165,12 +161,10 @@ class Japan extends AbstractProvider
         if ($this->year >= 1948) {
             $this->addHoliday(new Holiday(
                 'constitutionMemorialDay',
-                [
-                    'en' => 'Constitution Memorial Day',
-                    'ja' => '憲法記念日',
-                ],
+                ['en' => 'Constitution Memorial Day', 'ja' => '憲法記念日'],
                 new \DateTime("{$this->year}-5-3", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -185,12 +179,10 @@ class Japan extends AbstractProvider
         if ($this->year >= 1948) {
             $this->addHoliday(new Holiday(
                 'childrensDay',
-                [
-                    'en' => 'Children’s Day',
-                    'ja' => 'こどもの日',
-                ],
+                ['en' => 'Children’s Day', 'ja' => 'こどもの日'],
                 new \DateTime("{$this->year}-5-5", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -207,7 +199,8 @@ class Japan extends AbstractProvider
                 'cultureDay',
                 ['en' => 'Culture Day', 'ja' => '文化の日'],
                 new \DateTime("{$this->year}-11-3", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -224,14 +217,15 @@ class Japan extends AbstractProvider
                 'laborThanksgivingDay',
                 ['en' => 'Labor Thanksgiving Day', 'ja' => '勤労感謝の日'],
                 new \DateTime("{$this->year}-11-23", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
 
     /**
      * Emperors Birthday.
-     * The Emperors Birthday is on April 29rd and celebrated as such since 1949 to 1988.
+     * The Emperors Birthday is on April 29th and celebrated as such since 1949 to 1988.
      * December 23rd and celebrated as such since 1989 to 2018.
      * February 23rd and celebrated as such since 2020.(Coronation Day of the new Emperor, May 1, 2019).
      *
@@ -253,7 +247,8 @@ class Japan extends AbstractProvider
                 'emperorsBirthday',
                 ['en' => 'Emperor’s Birthday', 'ja' => '天皇誕生日'],
                 new \DateTime($emperorsBirthday, DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -291,7 +286,8 @@ class Japan extends AbstractProvider
                 'vernalEquinoxDay',
                 ['en' => 'Vernal Equinox Day', 'ja' => '春分の日'],
                 new \DateTime("{$this->year}-3-{$day}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -317,7 +313,8 @@ class Japan extends AbstractProvider
                 'comingOfAgeDay',
                 ['en' => 'Coming of Age Day', 'ja' => '成人の日'],
                 $date,
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -345,7 +342,8 @@ class Japan extends AbstractProvider
                 'greeneryDay',
                 ['en' => 'Greenery Day', 'ja' => 'みどりの日'],
                 $date,
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -362,7 +360,7 @@ class Japan extends AbstractProvider
      */
     protected function calculateMarineDay(): void
     {
-        if (1996 > $this->year) {
+        if ($this->year < 1996) {
             return;
         }
 
@@ -417,7 +415,8 @@ class Japan extends AbstractProvider
                 'mountainDay',
                 ['en' => 'Mountain Day', 'ja' => '山の日'],
                 $date,
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -449,7 +448,8 @@ class Japan extends AbstractProvider
                 'respectfortheAgedDay',
                 ['en' => 'Respect for the Aged Day', 'ja' => '敬老の日'],
                 $date,
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -492,7 +492,8 @@ class Japan extends AbstractProvider
                 'sportsDay',
                 $holidayName,
                 $date,
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -530,7 +531,8 @@ class Japan extends AbstractProvider
                 'autumnalEquinoxDay',
                 ['en' => 'Autumnal Equinox Day', 'ja' => '秋分の日'],
                 new \DateTime("{$this->year}-9-{$day}", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -564,7 +566,7 @@ class Japan extends AbstractProvider
                     while (\in_array($date, $dates, false)) {
                         $date->add(new \DateInterval('P1D'));
                     }
-                } elseif ($holiday >= '1973-04-12') {
+                } elseif ($holiday->format('Y-m-d') >= '1973-04-12') {
                     $date->add(new \DateInterval('P1D'));
                     if (\in_array($date, $dates, false)) {
                         continue; // @codeCoverageIgnore
@@ -578,7 +580,8 @@ class Japan extends AbstractProvider
                     $holiday,
                     [],
                     $date,
-                    $this->locale
+                    $this->locale,
+                    Holiday::TYPE_OFFICIAL
                 );
 
                 $this->addHoliday($substitute);
@@ -599,7 +602,8 @@ class Japan extends AbstractProvider
                 'coronationDay',
                 ['en' => 'Coronation Day', 'ja' => '即位の日'],
                 new \DateTime("{$this->year}-5-1", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -617,7 +621,8 @@ class Japan extends AbstractProvider
                 'enthronementProclamationCeremony',
                 ['en' => 'Enthronement Proclamation Ceremony', 'ja' => '即位礼正殿の儀'],
                 new \DateTime("{$this->year}-10-22", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
-                $this->locale
+                $this->locale,
+                Holiday::TYPE_OFFICIAL
             ));
         }
     }
@@ -659,7 +664,7 @@ class Japan extends AbstractProvider
                 $this->addHoliday(new Holiday("bridgeDay{$counter}", [
                     'en' => 'Bridge Public holiday',
                     'ja' => '国民の休日',
-                ], $bridgeDate, $this->locale));
+                ], $bridgeDate, $this->locale, Holiday::TYPE_OFFICIAL));
                 ++$counter;
             }
         }

@@ -17,6 +17,7 @@ declare(strict_types = 1);
 
 namespace Yasumi\Provider;
 
+use Yasumi\Exception\HolidayNotFoundException;
 use Yasumi\Exception\UnknownLocaleException;
 use Yasumi\Filters\BetweenFilter;
 use Yasumi\Filters\OnFilter;
@@ -91,7 +92,7 @@ abstract class AbstractProvider implements \Countable, ProviderInterface, \Itera
     /**
      * flag to track if holidays need to be sorted
      */
-    private bool $needSorting = false;
+    private bool $needSorting;
 
     /**
      * Creates a new holiday provider (i.e. country/state).
@@ -161,16 +162,12 @@ abstract class AbstractProvider implements \Countable, ProviderInterface, \Itera
 
     public function whenIs(string $key): string
     {
-        $this->isHolidayKeyNotEmpty($key); // Validate if key is not empty
-
-        return (string) $this->holidays[$key];
+        return (string) $this->getHolidayOrFail($key);
     }
 
     public function whatWeekDayIs(string $key): int
     {
-        $this->isHolidayKeyNotEmpty($key); // Validate if key is not empty
-
-        return (int) $this->holidays[$key]->format('w');
+        return (int) $this->getHolidayOrFail($key)->format('w');
     }
 
     /**
@@ -273,7 +270,7 @@ abstract class AbstractProvider implements \Countable, ProviderInterface, \Itera
     private function ensureSorted(): void
     {
         if ($this->needSorting) {
-            uasort($this->holidays, static fn (\DateTimeInterface $dateA, \DateTimeInterface $dateB): int => self::compareDates($dateA, $dateB));
+            uasort($this->holidays, $this->compareDates(...));
             $this->needSorting = false;
         }
     }
@@ -297,6 +294,27 @@ abstract class AbstractProvider implements \Countable, ProviderInterface, \Itera
     }
 
     /**
+     * Retrieves the holiday for the given key, or throws if it is not defined.
+     *
+     * @param string $key key of the holiday to be retrieved
+     *
+     * @throws \InvalidArgumentException when the given name is blank or empty
+     * @throws HolidayNotFoundException  when no holiday exists for the given key
+     */
+    private function getHolidayOrFail(string $key): Holiday
+    {
+        $this->isHolidayKeyNotEmpty($key); // Validate if key is not empty
+
+        $holiday = $this->getHoliday($key);
+
+        if (! $holiday instanceof Holiday) {
+            throw new HolidayNotFoundException(sprintf('Holiday "%s" is not defined for the year %d.', $key, $this->year));
+        }
+
+        return $holiday;
+    }
+
+    /**
      * Internal function to compare dates in order to sort them chronologically.
      *
      * @param \DateTimeInterface $dateA First date
@@ -305,7 +323,7 @@ abstract class AbstractProvider implements \Countable, ProviderInterface, \Itera
      * @return int result where 0 means dates are equal, -1 the first date is before the second date, and 1 if the
      *             second date is after the first
      */
-    private static function compareDates(\DateTimeInterface $dateA, \DateTimeInterface $dateB): int
+    private function compareDates(\DateTimeInterface $dateA, \DateTimeInterface $dateB): int
     {
         return $dateA <=> $dateB;
     }

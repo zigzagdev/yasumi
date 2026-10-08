@@ -1,0 +1,87 @@
+<?php
+
+declare(strict_types = 1);
+
+/**
+ * This file is part of the 'Yasumi' package.
+ *
+ * The easy PHP Library for calculating holidays.
+ *
+ * Copyright (c) 2015 - 2026 AzuyaLabs
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @author Sacha Telgenhof <me at sachatelgenhof dot com>
+ */
+
+namespace Yasumi\tests\Canada;
+
+use Yasumi\Holiday;
+use Yasumi\tests\HolidayTestCase;
+
+/**
+ * Class for testing Boxing Day in Canada.
+ */
+class SecondChristmasDayTest extends CanadaBaseTestCase implements HolidayTestCase
+{
+    /**
+     * The name of the holiday.
+     */
+    public const HOLIDAY = 'boxingDay';
+
+    /**
+     * Tests the holiday defined in this test.
+     *
+     * @param int       $year     the year for which the holiday defined in this test needs to be tested
+     * @param \DateTime $expected the expected date
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('HolidayDataProvider')]
+    public function testHoliday(int $year, \DateTimeInterface $expected): void
+    {
+        $this->assertHoliday(self::REGION, self::HOLIDAY, $year, $expected);
+    }
+
+    /**
+     * Returns a list of random test dates used for assertion of the holiday defined in this test.
+     *
+     * @return array<array> list of test dates for the holiday defined in this test
+     *
+     * @throws \Exception
+     */
+    public static function HolidayDataProvider(): array
+    {
+        $data = [];
+        for ($y = 1; $y <= 10; ++$y) {
+            $year = (int) self::dateTimeBetween('2000-01-01', '2100-01-01')->format('Y');
+            $data[] = [$year, new \DateTime("{$year}-12-26", new \DateTimeZone(self::TIMEZONE))];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Tests translated name of the holiday defined in this test.
+     *
+     * @throws \Exception
+     */
+    public function testTranslation(): void
+    {
+        $this->assertTranslatedHolidayName(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(1879),
+            [self::LOCALE => 'Boxing Day']
+        );
+    }
+
+    /**
+     * Tests type of the holiday defined in this test.
+     *
+     * @throws \Exception
+     */
+    public function testHolidayType(): void
+    {
+        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(1879), Holiday::TYPE_OFFICIAL);
+    }
+}

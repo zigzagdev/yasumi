@@ -23,6 +23,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])
     ->withParallel()
+    ->withSkipPath(__DIR__ . '/src/Yasumi/data')
     ->withFluentCallNewLine()
     ->withPhpSets()
     ->withPreparedSets(

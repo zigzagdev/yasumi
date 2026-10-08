@@ -18,6 +18,7 @@ declare(strict_types = 1);
 namespace Yasumi\tests\SouthKorea;
 
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
@@ -36,9 +37,9 @@ class UnitedNationsDayTest extends SouthKoreaBaseTestCase implements HolidayTest
     public const ESTABLISHMENT_YEAR = 1950;
 
     /**
-     * The year in which the holiday was removed.
+     * The year in which the holiday was abolished.
      */
-    public const REMOVED_YEAR = 1975;
+    public const ABOLISHED_YEAR = 1976;
 
     /**
      * Tests the holiday defined in this test.
@@ -47,40 +48,27 @@ class UnitedNationsDayTest extends SouthKoreaBaseTestCase implements HolidayTest
      */
     public function testHoliday(): void
     {
-        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR);
+        // From 1950 to 1975
+        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-10-24", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-10-24", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
-    }
 
-    /**
-     * Tests the holiday defined in this test after removal.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayAfterRemoval(): void
-    {
+        // From 1976 and later
         $this->assertNotHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::REMOVED_YEAR + 1)
+            static::generateRandomYear(self::ABOLISHED_YEAR),
         );
-    }
 
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
+        // Before 1950
         $this->assertNotHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1),
         );
     }
 
@@ -94,7 +82,7 @@ class UnitedNationsDayTest extends SouthKoreaBaseTestCase implements HolidayTest
         $this->assertTranslatedHolidayName(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR),
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1),
             [self::LOCALE => '유엔의 날']
         );
     }
@@ -109,7 +97,7 @@ class UnitedNationsDayTest extends SouthKoreaBaseTestCase implements HolidayTest
         $this->assertHolidayType(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::REMOVED_YEAR),
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::ABOLISHED_YEAR - 1),
             Holiday::TYPE_OFFICIAL
         );
     }

@@ -15,39 +15,39 @@ declare(strict_types = 1);
  * @author Sacha Telgenhof <me at sachatelgenhof dot com>
  */
 
-namespace Yasumi\tests\Netherlands;
+namespace Yasumi\tests\Canada;
 
 use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing Prince's Day in the Netherlands.
+ * Class for testing Easter Monday in Canada.
  */
-class princesDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
+class EasterMondayTest extends CanadaBaseTestCase implements HolidayTestCase
 {
     /**
      * The name of the holiday.
      */
-    public const HOLIDAY = 'princesDay';
+    public const HOLIDAY = 'easterMonday';
 
     /**
-     * Tests Prince's Day.
+     * Tests Easter Monday. Easter Monday is celebrated on the Monday after Easter Sunday.
      *
      * @throws \Exception
      */
-    public function testPrincesDay(): void
+    public function testEasterMonday(): void
     {
-        $year = static::generateRandomYear();
+        $year = 2019;
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("third tuesday of september {$year}", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-4-22", new \DateTimeZone(self::TIMEZONE))
         );
     }
 
     /**
-     * Tests the translated name of the holiday defined in this test.
+     * Tests translated name of the holiday defined in this test.
      *
      * @throws \Exception
      */
@@ -57,7 +57,7 @@ class princesDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
             self::REGION,
             self::HOLIDAY,
             static::generateRandomYear(),
-            [self::LOCALE => 'Prinsjesdag']
+            [self::LOCALE => 'Easter Monday']
         );
     }
 
@@ -68,6 +68,6 @@ class princesDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
      */
     public function testHolidayType(): void
     {
-        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OTHER);
+        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OFFICIAL);
     }
 }

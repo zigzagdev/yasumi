@@ -17,18 +17,18 @@ declare(strict_types = 1);
 
 namespace Yasumi\tests\SouthKorea;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing Seollal (Korean New Year's Day) in South Korea.
+ * Class for testing Seollal (Korean Lunar New Year's Day).
  */
 class SeollalTest extends SouthKoreaBaseTestCase implements HolidayTestCase
 {
-    /**
-     * The name of the holiday.
-     */
-    public const HOLIDAY = 'seollal';
+    /** @var int Upper limit year for lunar calendar test. */
+    public const LUNAR_UPPER_LIMIT = 2050;
 
     /**
      * The year in which the holiday was first established.
@@ -36,41 +36,80 @@ class SeollalTest extends SouthKoreaBaseTestCase implements HolidayTestCase
     public const ESTABLISHMENT_YEAR = 1985;
 
     /**
-     * The year of upper limit for tests of lunar date.
+     * The year in which the holiday was first expanded into a multi-day holiday.
      */
-    public const LUNAR_TEST_LIMIT = 2050;
+    public const EXPANSION_YEAR = 1989;
 
     /**
-     * Tests the holiday defined in this test.
+     * Testing Seollal itself
      *
      * @throws \Exception
      */
-    public function testHoliday(): void
+    public function testSeollal(): void
     {
-        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::LUNAR_TEST_LIMIT);
-        $date = new \DateTime(self::LUNAR_HOLIDAY[self::HOLIDAY][$year], new \DateTimeZone(self::TIMEZONE));
+        // From 1985 to LUNAR_UPPER_LIMIT
+        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::LUNAR_UPPER_LIMIT);
+        $this->assertHoliday(
+            self::REGION,
+            'seollal',
+            $year,
+            new \DateTime(self::LUNAR_HOLIDAY['seollal'][$year], DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+        );
 
-        if ($year >= 1985) {
-            // Seollal
-            $this->assertHoliday(self::REGION, self::HOLIDAY, $year, $date);
-        }
+        // Before 1985
+        $this->assertNotHoliday(
+            self::REGION,
+            'seollal',
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
+        );
+    }
 
-        if ($year >= 1989) {
-            // Day before Seollal
-            $this->assertHoliday(
-                self::REGION,
-                'dayBeforeSeollal',
-                $year,
-                (clone $date)->sub(new \DateInterval('P1D'))
-            );
-            // Day after Seollal
-            $this->assertHoliday(
-                self::REGION,
-                'dayAfterSeollal',
-                $year,
-                (clone $date)->add(new \DateInterval('P1D'))
-            );
-        }
+    /**
+     * Testing Seollal's eve
+     *
+     * @throws \DateInvalidOperationException
+     */
+    public function testDayBeforeSeollal(): void
+    {
+        // From 1989 to LUNAR_UPPER_LIMIT
+        $year = static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT);
+        $this->assertHoliday(
+            self::REGION,
+            'dayBeforeSeollal',
+            $year,
+            (new \DateTime(self::LUNAR_HOLIDAY['seollal'][$year], DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE)))->sub(new \DateInterval('P1D'))
+        );
+
+        // Before 1989
+        $this->assertNotHoliday(
+            self::REGION,
+            'dayBeforeSeollal',
+            static::generateRandomYear(null, self::EXPANSION_YEAR - 1)
+        );
+    }
+
+    /**
+     * Testing the day after Seollal
+     *
+     * @throws \Exception
+     */
+    public function testDayAfterSeollal(): void
+    {
+        // From 1989 to LUNAR_UPPER_LIMIT
+        $year = static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT);
+        $this->assertHoliday(
+            self::REGION,
+            'dayAfterSeollal',
+            $year,
+            (new \DateTime(self::LUNAR_HOLIDAY['seollal'][$year], DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE)))->add(new \DateInterval('P1D'))
+        );
+
+        // Before 1989
+        $this->assertNotHoliday(
+            self::REGION,
+            'dayAfterSeollal',
+            static::generateRandomYear(null, self::EXPANSION_YEAR - 1)
+        );
     }
 
     /**
@@ -78,51 +117,14 @@ class SeollalTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      *
      * @throws \Exception
      */
-    public function testSubstituteHoliday(): void
+    #[DataProvider('SubstituteHolidayDataProvider')]
+    public function testSubstituteHoliday(int $year, string $key, string $expected): void
     {
-        $tz = new \DateTimeZone(self::TIMEZONE);
-
-        // Before 2022
         $this->assertSubstituteHoliday(
             self::REGION,
-            'dayBeforeSeollal',
-            2016,
-            new \DateTime('2016-2-10', $tz)
-        );
-        $this->assertNotSubstituteHoliday(self::REGION, 'dayAfterSeollal', 2021);
-
-        // By sunday
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            'dayBeforeSeollal',
-            2033,
-            new \DateTime('2033-2-2', $tz)
-        );
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            'seollal',
-            2034,
-            new \DateTime('2034-2-21', $tz)
-        );
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            'dayAfterSeollal',
-            2024,
-            new \DateTime('2024-2-12', $tz)
-        );
-    }
-
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
-        $this->assertNotHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            $key,
+            $year,
+            new \DateTime($expected, DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
     }
 
@@ -133,29 +135,41 @@ class SeollalTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      */
     public function testTranslation(): void
     {
-        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::LUNAR_TEST_LIMIT);
-
+        // From 1985 to 1988
+        // Seollal itself
         $this->assertTranslatedHolidayName(
             self::REGION,
-            self::HOLIDAY,
-            $year,
+            'seollal',
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::EXPANSION_YEAR - 1),
+            [self::LOCALE => '민속의 날']
+        );
+
+        // From 1989 to LUNAR_UPPER_LIMIT
+        // Seollal itself
+        $this->assertTranslatedHolidayName(
+            self::REGION,
+            'seollal',
+            static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT),
             [self::LOCALE => '설날']
         );
 
-        if ($year >= 1990) {
-            $this->assertHolidayType(
-                self::REGION,
-                'dayBeforeSeollal',
-                $year,
-                Holiday::TYPE_OFFICIAL
-            );
-            $this->assertHolidayType(
-                self::REGION,
-                'dayAfterSeollal',
-                $year,
-                Holiday::TYPE_OFFICIAL
-            );
-        }
+        // From 1989 to LUNAR_UPPER_LIMIT
+        // Seollal's eve
+        $this->assertTranslatedHolidayName(
+            self::REGION,
+            'dayBeforeSeollal',
+            static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT),
+            [self::LOCALE => '설날 연휴']
+        );
+
+        // From 1989 to LUNAR_UPPER_LIMIT
+        // The day after Seollal
+        $this->assertTranslatedHolidayName(
+            self::REGION,
+            'dayAfterSeollal',
+            static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT),
+            [self::LOCALE => '설날 연휴']
+        );
     }
 
     /**
@@ -165,28 +179,56 @@ class SeollalTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      */
     public function testHolidayType(): void
     {
-        $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::LUNAR_TEST_LIMIT);
-
+        // From 1985 to LUNAR_UPPER_LIMIT
         $this->assertHolidayType(
             self::REGION,
-            self::HOLIDAY,
-            $year,
+            'seollal',
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR, self::LUNAR_UPPER_LIMIT),
             Holiday::TYPE_OFFICIAL
         );
 
-        if ($year >= 1990) {
-            $this->assertHolidayType(
-                self::REGION,
-                'dayBeforeSeollal',
-                $year,
-                Holiday::TYPE_OFFICIAL
-            );
-            $this->assertHolidayType(
-                self::REGION,
-                'dayAfterSeollal',
-                $year,
-                Holiday::TYPE_OFFICIAL
-            );
-        }
+        // From 1989 to LUNAR_UPPER_LIMIT
+        $this->assertHolidayType(
+            self::REGION,
+            'dayBeforeSeollal',
+            static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT),
+            Holiday::TYPE_OFFICIAL
+        );
+
+        // From 1989 to LUNAR_UPPER_LIMIT
+        $this->assertHolidayType(
+            self::REGION,
+            'dayAfterSeollal',
+            static::generateRandomYear(self::EXPANSION_YEAR, self::LUNAR_UPPER_LIMIT),
+            Holiday::TYPE_OFFICIAL
+        );
+    }
+
+    /**
+     * Data provider for generating a precalculated list of alternative holidays
+     *
+     * Range: From 2010 to 2050 (LUNAR_UPPER_LIMIT)
+     *
+     * @return array<array<int, string>> year, date
+     */
+    public static function SubstituteHolidayDataProvider(): array
+    {
+        return [
+            2016 => [2016, 'dayBeforeSeollal', '2016-02-10'],
+            2017 => [2017, 'dayAfterSeollal', '2017-01-30'],
+            2020 => [2020, 'dayAfterSeollal', '2020-01-27'],
+            2023 => [2023, 'seollal', '2023-01-24'],
+            2024 => [2024, 'dayAfterSeollal', '2024-02-12'],
+            2027 => [2027, 'seollal', '2027-02-09'],
+            2030 => [2030, 'seollal', '2030-02-05'],
+            2033 => [2033, 'dayBeforeSeollal', '2033-02-02'],
+            2034 => [2034, 'seollal', '2034-02-21'],
+            2036 => [2036, 'dayBeforeSeollal', '2036-01-30'],
+            2037 => [2037, 'seollal', '2037-02-17'],
+            2039 => [2039, 'dayBeforeSeollal', '2039-01-26'],
+            2040 => [2040, 'seollal', '2040-02-14'],
+            2044 => [2044, 'dayAfterSeollal', '2044-02-01'],
+            2047 => [2047, 'dayAfterSeollal', '2047-01-28'],
+        ];
     }
 }

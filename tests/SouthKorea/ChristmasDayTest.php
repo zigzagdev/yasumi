@@ -18,6 +18,7 @@ declare(strict_types = 1);
 namespace Yasumi\tests\SouthKorea;
 
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
@@ -42,12 +43,20 @@ class ChristmasDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      */
     public function testHoliday(): void
     {
+        // From 1949 onwards.
         $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-12-25", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-12-25", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
+        );
+
+        // Before 1949
+        $this->assertNotHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(null, self::ESTABLISHMENT_YEAR - 1)
         );
     }
 
@@ -60,35 +69,13 @@ class ChristmasDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      * @throws \Exception
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('SubstituteHolidayDataProvider')]
-    public function testSubstituteHoliday(int $year, ?string $expected): void
+    public function testSubstituteHoliday(int $year, string $expected): void
     {
-        if ($expected) {
-            $this->assertSubstituteHoliday(
-                self::REGION,
-                self::HOLIDAY,
-                $year,
-                new \DateTime($expected, new \DateTimeZone(self::TIMEZONE))
-            );
-        } else {
-            $this->assertNotSubstituteHoliday(
-                self::REGION,
-                self::HOLIDAY,
-                $year
-            );
-        }
-    }
-
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
-        $this->assertNotHoliday(
+        $this->assertSubstituteHoliday(
             self::REGION,
             self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            $year,
+            new \DateTime($expected, DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
     }
 
@@ -122,40 +109,22 @@ class ChristmasDayTest extends SouthKoreaBaseTestCase implements HolidayTestCase
         );
     }
 
-    /**
-     * Returns a list of test dates.
-     *
-     * @return array<array> list of test dates for the holiday defined in this test
-     */
     public static function SubstituteHolidayDataProvider(): array
     {
-        return [
-            [1949, null],
-            [1950, null],
-            [1959, null],
-            [1960, '1960-12-26'],
-            [1965, null],
-            [2020, null],
-            [2021, null],
-            [2022, null],
-            [2023, null],
-            [2024, null],
-            [2025, null],
-            [2026, null],
-            [2027, '2027-12-27'],
-            [2028, null],
-            [2029, null],
-            [2030, null],
-            [2031, null],
-            [2032, '2032-12-27'],
-            [2033, '2033-12-26'],
-            [2034, null],
-            [2035, null],
-            [2036, null],
-            [2037, null],
-            [2038, '2038-12-27'],
-            [2039, '2039-12-26'],
-            [2040, null],
-        ];
+        return static::generateRandomDatesWithModifier(12, 25, function ($year, \DateTime $date): ?bool {
+            if (1960 === $year) {
+                $date->modify('next monday');
+
+                return null;
+            }
+
+            if ($year < 2023 || ! self::isWeekend($date)) {
+                return false;
+            }
+
+            $date->modify('next monday');
+
+            return null;
+        }, 20, self::ESTABLISHMENT_YEAR, self::TIMEZONE);
     }
 }

@@ -33,10 +33,11 @@ class CanadaDayTest extends CanadaBaseTestCase implements HolidayTestCase
     /**
      * The year in which the holiday was first established.
      */
-    public const ESTABLISHMENT_YEAR = 1983;
+    public const ESTABLISHMENT_YEAR = 1879;
 
     /**
-     * Tests Canada Day on or after 1983. Canada Day was established in 1983 on July 1st.
+     * Tests Canada Day on or after 1983. Since 1983, Canada Day is July 1, unless July 1 is a Sunday, in which case
+     * the holiday is observed on July 2.
      *
      * @throws \Exception
      */
@@ -55,6 +56,30 @@ class CanadaDayTest extends CanadaBaseTestCase implements HolidayTestCase
             self::HOLIDAY,
             $year,
             new \DateTime("{$year}-07-02", new \DateTimeZone(self::TIMEZONE))
+        );
+    }
+
+    /**
+     * Tests Canada Day between 1879 and 1982. Dominion Day was always observed on July 1, even when July 1 was a
+     * Sunday (the July 2 substitution was only introduced in 1983).
+     *
+     * @throws \Exception
+     */
+    public function testCanadaDayOnOrBefore1982(): void
+    {
+        $year = 1979; // July 1 is a Sunday, but no substitution applied before 1983
+        $this->assertHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            $year,
+            new \DateTime("{$year}-07-01", new \DateTimeZone(self::TIMEZONE))
+        );
+        $year = 1981; // July 1 is not a Sunday
+        $this->assertHoliday(
+            self::REGION,
+            self::HOLIDAY,
+            $year,
+            new \DateTime("{$year}-07-01", new \DateTimeZone(self::TIMEZONE))
         );
     }
 

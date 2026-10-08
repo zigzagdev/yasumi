@@ -21,28 +21,28 @@ use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing Pentecost in the Netherlands.
+ * Class for testing Prince's Day in the Netherlands.
  */
-class pentecostMondayTest extends NetherlandsBaseTestCase implements HolidayTestCase
+class PrincesDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
 {
     /**
-     * The name of the holiday to be tested.
+     * The name of the holiday.
      */
-    public const HOLIDAY = 'pentecostMonday';
+    public const HOLIDAY = 'princesDay';
 
     /**
-     * Tests Pentecost Monday.
+     * Tests Prince's Day.
      *
      * @throws \Exception
      */
-    public function testPentecostMonday(): void
+    public function testPrincesDay(): void
     {
-        $year = 2020;
+        $year = static::generateRandomYear();
         $this->assertHoliday(
             self::REGION,
-            'pentecostMonday',
+            self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-6-1", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("third tuesday of september {$year}", new \DateTimeZone(self::TIMEZONE))
         );
     }
 
@@ -57,7 +57,7 @@ class pentecostMondayTest extends NetherlandsBaseTestCase implements HolidayTest
             self::REGION,
             self::HOLIDAY,
             static::generateRandomYear(),
-            [self::LOCALE => 'tweede pinksterdag']
+            [self::LOCALE => 'Prinsjesdag']
         );
     }
 
@@ -68,6 +68,6 @@ class pentecostMondayTest extends NetherlandsBaseTestCase implements HolidayTest
      */
     public function testHolidayType(): void
     {
-        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OFFICIAL);
+        $this->assertHolidayType(self::REGION, self::HOLIDAY, static::generateRandomYear(), Holiday::TYPE_OTHER);
     }
 }

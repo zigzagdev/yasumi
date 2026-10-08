@@ -8,6 +8,82 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 Changes related to the logic of the holidays or their providers are listed first,
 followed by any architectural or technical changes.
 
+## [unreleased]
+
+## [2.12.0] - 2026-09-30
+
+### Features
+
+- Add Kenya holiday provider ([#418](https://github.com/azuyalabs/yasumi/issues/418))
+- *(Colombia)* Add Day of Our Lady of the Rosary of Chiquinquirá holiday
+- Add Colombia holiday provider ([#403](https://github.com/azuyalabs/yasumi/issues/403))
+- *(Italy)* Add San Francesco of Assisi public holiday
+- *(Australia)* Refresh holiday rules and rename Queen's Birthday to Monarch's Birthday ([#410](https://github.com/azuyalabs/yasumi/issues/410))
+
+### Fixes
+
+- *(South Korea)* Add missing namespace to LabourDayTest
+- *(Various typos)* Correct spelling errors
+- *(Canada)* Add Boxing Day as explicit holiday and fix tests
+- Replace outdated PHP timezone names ([#425](https://github.com/azuyalabs/yasumi/issues/425))
+- *(Canada)* Add Victoria Day and correct historical year bounds
+- *(SouthKorea)* Correct buddhasBirthday translation year bound and update source URL
+- *(Argentina)* Align code style with codebase conventions
+- Throw HolidayNotFoundException for unknown holiday keys ([#421](https://github.com/azuyalabs/yasumi/issues/421))
+- *(Japan)* Correct year bounds and holiday name accuracy
+- *(Belgium)* Easter and Pentecost are not official holidays
+- *(Belgium)* Correct nationalDay translations and rename PentecostMondayTest
+
+### Refactor
+
+- *(Provider)* Modernize PHP syntax for readability and conciseness
+- Clean up property initialization and modernize test mocks
+- *(Test)* Remove redundant test constructors
+- *(South Korea)* Use readonly properties and constructor promotion
+- *(South Korea)* Add Labor Day and reinstate Constitution Day ([#413](https://github.com/azuyalabs/yasumi/issues/413))
+- *(Netherlands)* Standardize test file naming
+- *(Japan)* Code consistency improvements
+- Clean up SubstituteHoliday and fix Japan iterator null check
+
+### Documentation
+
+- Add release policy documenting bi-annual release cycle
+- Update CODE_OF_CONDUCT to Contributor Covenant v3.0
+- Updates to reflect recent PHPstan level bump
+- Clarify holiday type classification
+- Update list of supported versions
+
+### Testing
+
+- *(Canada)* Bound random year range in Boxing Day tests to >= 1879
+- *(Lithuania)* Add allSoulsDay to official holidays test and implement ProviderTestCase
+- *(Japan)* Skip 2020/2021 in MarineDay random year test instead of early return
+- *(SouthKorea)* Correct test year range for pre-1949 assertion
+- *(Japan)* Exclude 2019 from emperorsBirthday random year range
+
+### Other
+
+- Bump composer package versions to latest installed versions
+- *(Deps)* Bump actions/stale from 10.4.0 to 11.0.0 ([#422](https://github.com/azuyalabs/yasumi/issues/422))
+- *(Deps)* Add rector dev dependency and configure tool
+- *(Colombia)* Fix file permissions on test files
+- Update .editorconfig settings
+- *(Deps)* Bump actions/stale from 10.3.0 to 10.4.0 ([#419](https://github.com/azuyalabs/yasumi/issues/419))
+- Increase PHPStan analysis level to 9
+- Upgrade rector configuration
+- *(Deps)* Bump phpstan from 2.1 to 2.2
+- *(Deps)* Bump actions/cache from 5 to 6 ([#417](https://github.com/azuyalabs/yasumi/issues/417))
+- *(Deps)* Bump actions/checkout from 6 to 7 ([#416](https://github.com/azuyalabs/yasumi/issues/416))
+- *(Deps)* Bump actions/stale from 10.2.0 to 10.3.0 ([#411](https://github.com/azuyalabs/yasumi/issues/411))
+
+## New Contributors ❤️
+
+* @aaronflorey made their first contribution
+* @d-takeuchi made their first contribution
+* @giovanny07 made their first contribution
+* @kevinpapst made their first contribution
+* @zigzagdev made their first contribution
+
 ## [2.11.0] - 2026-03-30
 
 ### Features
@@ -207,6 +283,8 @@ followed by any architectural or technical changes.
 * @mtbossa made their first contribution
 * @thrashzone13 made their first contribution
 
+[unreleased]: https://github.com/azuyalabs/yasumi/compare/2.12.0..HEAD
+[2.12.0]: https://github.com/azuyalabs/yasumi/compare/2.11.0..2.12.0
 [2.11.0]: https://github.com/azuyalabs/yasumi/compare/2.10.0..2.11.0
 [2.10.0]: https://github.com/azuyalabs/yasumi/compare/2.9.0..2.10.0
 [2.9.0]: https://github.com/azuyalabs/yasumi/compare/2.8.0..2.9.0

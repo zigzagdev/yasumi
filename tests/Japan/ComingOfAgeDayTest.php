@@ -75,7 +75,7 @@ class ComingOfAgeDayTest extends JapanBaseTestCase implements HolidayTestCase
      *
      * @throws \Exception
      */
-    public function testConstitutionMemorialDayBefore1948(): void
+    public function testComingOfAgeDayBefore1948(): void
     {
         $this->assertNotHoliday(
             self::REGION,

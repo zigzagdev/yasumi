@@ -66,21 +66,6 @@ class WorldAnimalDayTest extends NetherlandsBaseTestCase implements HolidayTestC
     }
 
     /**
-     * Tests type of the holiday defined in this test.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayType(): void
-    {
-        $this->assertHolidayType(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(self::ESTABLISHMENT_YEAR),
-            Holiday::TYPE_OTHER
-        );
-    }
-
-    /**
      * Tests the translated name of the holiday defined in this test.
      *
      * @throws \Exception
@@ -92,6 +77,21 @@ class WorldAnimalDayTest extends NetherlandsBaseTestCase implements HolidayTestC
             self::HOLIDAY,
             static::generateRandomYear(self::ESTABLISHMENT_YEAR),
             [self::LOCALE => 'Werelddierendag']
+        );
+    }
+
+    /**
+     * Tests type of the holiday defined in this test.
+     *
+     * @throws \Exception
+     */
+    public function testHolidayType(): void
+    {
+        $this->assertHolidayType(
+            self::REGION,
+            self::HOLIDAY,
+            static::generateRandomYear(self::ESTABLISHMENT_YEAR),
+            Holiday::TYPE_OTHER
         );
     }
 }

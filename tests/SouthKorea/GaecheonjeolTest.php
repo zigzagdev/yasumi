@@ -17,7 +17,9 @@ declare(strict_types = 1);
 
 namespace Yasumi\tests\SouthKorea;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yasumi\Holiday;
+use Yasumi\Provider\DateTimeZoneFactory;
 use Yasumi\tests\HolidayTestCase;
 
 /**
@@ -42,39 +44,14 @@ class GaecheonjeolTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      */
     public function testHoliday(): void
     {
+        // From 1949 onwards.
         $year = static::generateRandomYear(self::ESTABLISHMENT_YEAR);
         $this->assertHoliday(
             self::REGION,
             self::HOLIDAY,
             $year,
-            new \DateTime("{$year}-10-3", new \DateTimeZone(self::TIMEZONE))
+            new \DateTime("{$year}-10-3", DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
-    }
-
-    /**
-     * Tests the substitute holiday defined in this test (conflict with Chuseok).
-     *
-     * @throws \Exception
-     */
-    public function testSubstituteByChuseok(): void
-    {
-        $tz = new \DateTimeZone(self::TIMEZONE);
-
-        $this->assertHoliday(
-            self::REGION,
-            'chuseok',
-            2028,
-            new \DateTime('2028-10-3', $tz)
-        );
-        $this->assertHoliday(
-            self::REGION,
-            'dayBeforeChuseok',
-            2036,
-            new \DateTime('2036-10-3', $tz)
-        );
-        // Chuseok will be substitute instead of Gaecheonjeol.
-        $this->assertNotSubstituteHoliday(self::REGION, self::HOLIDAY, 2028);
-        $this->assertNotSubstituteHoliday(self::REGION, self::HOLIDAY, 2036);
     }
 
     /**
@@ -82,48 +59,14 @@ class GaecheonjeolTest extends SouthKoreaBaseTestCase implements HolidayTestCase
      *
      * @throws \Exception
      */
-    public function testSubstituteHoliday(): void
+    #[DataProvider('SubstituteHolidayDataProvider')]
+    public function testSubstituteHoliday(int $year, string $expected): void
     {
-        $tz = new \DateTimeZone(self::TIMEZONE);
-
-        // Before 2022
-        $this->assertNotSubstituteHoliday(self::REGION, self::HOLIDAY, 2015);
-        $this->assertNotSubstituteHoliday(self::REGION, self::HOLIDAY, 2020);
         $this->assertSubstituteHoliday(
             self::REGION,
             self::HOLIDAY,
-            2021,
-            new \DateTime('2021-10-4', $tz)
-        );
-
-        // By saturday
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            2026,
-            new \DateTime('2026-10-5', $tz)
-        );
-
-        // By sunday
-        $this->assertSubstituteHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            2032,
-            new \DateTime('2032-10-4', $tz)
-        );
-    }
-
-    /**
-     * Tests the holiday defined in this test before establishment.
-     *
-     * @throws \Exception
-     */
-    public function testHolidayBeforeEstablishment(): void
-    {
-        $this->assertNotHoliday(
-            self::REGION,
-            self::HOLIDAY,
-            static::generateRandomYear(1000, self::ESTABLISHMENT_YEAR - 1)
+            $year,
+            new \DateTime($expected, DateTimeZoneFactory::getDateTimeZone(self::TIMEZONE))
         );
     }
 
@@ -155,5 +98,21 @@ class GaecheonjeolTest extends SouthKoreaBaseTestCase implements HolidayTestCase
             static::generateRandomYear(self::ESTABLISHMENT_YEAR),
             Holiday::TYPE_OFFICIAL
         );
+    }
+
+    public static function SubstituteHolidayDataProvider(): array
+    {
+        return [
+            [2021, '2021-10-04'],
+            [2026, '2026-10-05'],
+            [2027, '2027-10-04'],
+            [2032, '2032-10-04'],
+            [2032, '2032-10-04'],
+            [2037, '2037-10-05'],
+            [2038, '2038-10-04'],
+            [2043, '2043-10-05'],
+            [2048, '2048-10-05'],
+            [2049, '2049-10-04'],
+        ];
     }
 }

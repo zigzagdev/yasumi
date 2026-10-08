@@ -24,17 +24,12 @@ use Yasumi\tests\HolidayTestCase;
 /**
  * Class for testing the second day of Carnival in the Netherlands.
  */
-class secondCarnivalDay extends NetherlandsBaseTestCase implements HolidayTestCase
+class SecondCarnivalDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
 {
     /**
      * The name of the holiday to be tested.
      */
     public const HOLIDAY = 'secondCarnivalDay';
-
-    public function __construct()
-    {
-        parent::__construct(static::class);
-    }
 
     /**
      * Tests the holiday defined in this test.

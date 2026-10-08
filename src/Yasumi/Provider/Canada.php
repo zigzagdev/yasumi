@@ -50,12 +50,13 @@ class Canada extends AbstractProvider
 
         // Add Christian holidays
         $this->addHoliday($this->christmasDay($this->year, $this->timezone, $this->locale));
-        $this->addHoliday($this->secondChristmasDay($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->goodFriday($this->year, $this->timezone, $this->locale));
         $this->addHoliday($this->easterMonday($this->year, $this->timezone, $this->locale));
 
         // Calculate other holidays
+        $this->calculateBoxingDay();
         $this->calculateCanadaDay();
+        $this->calculateVictoriaDay();
         $this->calculateLabourDay();
         $this->calculateThanksgivingDay();
         $this->calculateRemembranceDay();
@@ -66,7 +67,34 @@ class Canada extends AbstractProvider
     {
         return [
             'https://en.wikipedia.org/wiki/Public_holidays_in_Canada',
+            'https://www.canada.ca/en/services/jobs/workplace/federal-labour-standards/vacations-holidays.html',
         ];
+    }
+
+    /**
+     * Boxing Day.
+     *
+     * @see https://en.wikipedia.org/wiki/Boxing_Day
+     *
+     * @throws \InvalidArgumentException
+     * @throws UnknownLocaleException
+     * @throws \Exception
+     */
+    protected function calculateBoxingDay(): void
+    {
+        if ($this->year < 1879) {
+            return;
+        }
+
+        $this->addHoliday(new Holiday(
+            'boxingDay',
+            [
+                'en' => 'Boxing Day',
+                'fr' => 'Lendemain de Noël',
+            ],
+            new \DateTime("{$this->year}-12-26", DateTimeZoneFactory::getDateTimeZone($this->timezone)),
+            $this->locale
+        ));
     }
 
     /**
@@ -166,8 +194,10 @@ class Canada extends AbstractProvider
      *
      * @see https://en.wikipedia.org/wiki/Canada_Day.
      * @see Holidays Act, R.S.C., 1985, c. H-5, https://laws-lois.justice.gc.ca/eng/acts/h-5/page-1.html
+     * @see https://www.canada.ca/en/canadian-heritage/campaigns/canada-day/about/dominion-day.html
      *
      * by statute, Canada Day is July 1 if that day is not Sunday, and July 2 if July 1 is a Sunday.
+     * The holiday (as Dominion Day) was established in 1879.
      *
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
@@ -175,13 +205,18 @@ class Canada extends AbstractProvider
      */
     protected function calculateCanadaDay(): void
     {
-        if ($this->year < 1983) {
+        if ($this->year < 1879) {
             return;
         }
+
         $date = new \DateTime("{$this->year}-07-01", DateTimeZoneFactory::getDateTimeZone($this->timezone));
-        if (7 === (int) $date->format('N')) {
+
+        // The substitution of July 2 when July 1 is a Sunday was introduced by the 1980-81-82-83, c. 124 amendment.
+        // For years 1879-1982, July 1 was always the holiday (as Dominion Day), regardless of the weekday.
+        if ($this->year >= 1983 && 7 === (int) $date->format('N')) {
             $date = new \DateTime("{$this->year}-07-02", DateTimeZoneFactory::getDateTimeZone($this->timezone));
         }
+
         $this->addHoliday(new Holiday(
             'canadaDay',
             [],
@@ -194,6 +229,7 @@ class Canada extends AbstractProvider
      * Thanksgiving.
      *
      * @see https://en.wikipedia.org/wiki/Thanksgiving_(Canada)
+     * @see https://www.thecanadianencyclopedia.ca/en/article/thanksgiving-day
      *
      * @throws \InvalidArgumentException
      * @throws UnknownLocaleException
@@ -201,7 +237,10 @@ class Canada extends AbstractProvider
      */
     protected function calculateThanksgivingDay(): void
     {
-        if ($this->year < 1879) {
+        // The second Monday of October was only fixed by proclamation on January 31, 1957. Prior to that the date was
+        // set annually by proclamation (between 1921 and 1931 it was even combined with Armistice Day), so no fixed
+        // rule applies to earlier years.
+        if ($this->year < 1957) {
             return;
         }
 

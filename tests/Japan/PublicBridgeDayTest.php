@@ -66,6 +66,8 @@ class PublicBridgeDayTest extends JapanBaseTestCase implements HolidayTestCase
 
     /**
      * Tests the translated name of the holiday defined in this test.
+     *
+     * @throws \Exception
      */
     public function testTranslation(): void
     {
@@ -74,6 +76,8 @@ class PublicBridgeDayTest extends JapanBaseTestCase implements HolidayTestCase
 
     /**
      * Tests type of the holiday defined in this test.
+     *
+     * @throws \Exception
      */
     public function testHolidayType(): void
     {

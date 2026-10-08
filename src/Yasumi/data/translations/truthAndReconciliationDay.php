@@ -18,5 +18,5 @@ declare(strict_types = 1);
 // Translations for Truth And Reconciliation Day
 return [
     'en' => 'National Day For Truth And Reconciliation',
-    'fr' => 'la Journée nationale de la vérité et de la réconciliation',
+    'fr' => 'Journée nationale de la vérité et de la réconciliation',
 ];

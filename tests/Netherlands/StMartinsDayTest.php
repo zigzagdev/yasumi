@@ -21,37 +21,37 @@ use Yasumi\Holiday;
 use Yasumi\tests\HolidayTestCase;
 
 /**
- * Class for testing st Nicholas Day in the Netherlands.
+ * Class for testing st Martins Day in the Netherlands.
  */
-class stNicholasDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
+class StMartinsDayTest extends NetherlandsBaseTestCase implements HolidayTestCase
 {
     /**
      * The name of the holiday.
      */
-    public const HOLIDAY = 'stNicholasDay';
+    public const HOLIDAY = 'stMartinsDay';
 
     /**
-     * Tests Sint Nicholas Day.
+     * Tests Sint Martins Day.
      *
-     * @param int       $year     the year for which Sint Nicholas Day needs to be tested
+     * @param int       $year     the year for which Sint Martins Day needs to be tested
      * @param \DateTime $expected the expected date
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('stNicholasDayDataProvider')]
-    public function teststNicholasDay(int $year, \DateTimeInterface $expected): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('stMartinsDayDataProvider')]
+    public function teststMartinsDay(int $year, \DateTimeInterface $expected): void
     {
         $this->assertHoliday(self::REGION, self::HOLIDAY, $year, $expected);
     }
 
     /**
-     * Returns a list of random test dates used for assertion of Sint Nicholas Day.
+     * Returns a list of random test dates used for assertion of Sint Martins Day.
      *
-     * @return array<array> list of test dates for Sint Nicholas Day
+     * @return array<array> list of test dates for Sint Martins Day
      *
      * @throws \Exception
      */
-    public static function stNicholasDayDataProvider(): array
+    public static function stMartinsDayDataProvider(): array
     {
-        return static::generateRandomDates(12, 5, self::TIMEZONE);
+        return static::generateRandomDates(11, 11, self::TIMEZONE);
     }
 
     /**
@@ -65,7 +65,7 @@ class stNicholasDayTest extends NetherlandsBaseTestCase implements HolidayTestCa
             self::REGION,
             self::HOLIDAY,
             static::generateRandomYear(),
-            [self::LOCALE => 'Sinterklaas']
+            [self::LOCALE => 'Sint Maarten']
         );
     }
 
